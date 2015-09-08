@@ -4,7 +4,7 @@ package com.johndulin.playground
 import scala.swing._
 import java.awt.{Color, Graphics2D, Dimension}
 
-class Window(data: Array[Array[Color]]) extends Panel {
+class Screen(data: Array[Array[Color]]) extends Panel {
 
     override def paintComponent(g: Graphics2D) {
       val dx = g.getClipBounds.width.toFloat  / data.length
