@@ -4,8 +4,8 @@ package com.johndulin.playground
 import Array._
 
 /**
- *  Instantiates a Building with state.
- *  Only builds one building for now.
+ *  Instantiates a Building with state - 
+ *  BuildingState Factory object to boostrap the simulation.
  *
  *  @constructor creates a building of 'e' elevators, 'floors' floors
  *  @param e number of elevators in the building

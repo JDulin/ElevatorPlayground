@@ -55,12 +55,12 @@ case class ElevatorState(
     if(pick contains next) {
       
       val r = new Random() 
-      val dir = pick(next) //._2 is not a member of Int XXX ?
+      val dir = pick(next)
 
       if (dir < 0) {
         Set(r.nextInt(next))
       } else { 
-        Set(r.nextInt(floors - floor + 1) + floor)
+        Set(r.nextInt(floors - floor + 1) + floor - 1)
       }
 
     } else {
@@ -87,15 +87,12 @@ case class ElevatorState(
   }
 
   // Returns the closest floor with a pickup request
-  // TODO : return types changed to Options. All catches
   def near(target: Map[Int,Int]):Option[Int] = {
-    //  target.nonEmpty option target.minBy(x => abs(x._2 - floor))._1
     allCatch opt target.minBy(x => abs(x._2 - floor))._1
   }
 
   // Returns the closest floor that's a passenger destination
   def near(target: Set[Int]):Option[Int] = {
-    // target.nonEmpty option target.minBy(x => abs(x - floor))
     allCatch opt target.minBy(x => abs(x - floor))
   }
 }
