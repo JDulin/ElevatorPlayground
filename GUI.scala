@@ -5,16 +5,14 @@ import scala.swing._ //{Panel, MainFrame, SimpleSwingApplication}
 import java.awt.{Color, Graphics2D, Dimension}
 
 object GUI extends SimpleSwingApplication {
-  val build = Building(6,1)
-
-  // TODO : Generate from BuildingState
+  var build = Building(1,6)
   var picture = draw(build)
 
   lazy val top = {
     println("Test")
 
     lazy val screen = new Screen(picture) {
-       preferredSize = new Dimension(400, 400)
+       preferredSize = new Dimension(800, 800)
     }
 
     new MainFrame {
@@ -22,9 +20,8 @@ object GUI extends SimpleSwingApplication {
         step()
         screen.repaint()
       }
-      
       title = "Elevator Playground"
-      background = Color.BLACK
+      background = Color.WHITE
       contents = new BoxPanel(Orientation.Vertical) {
         contents += screen
         contents += button
@@ -34,41 +31,41 @@ object GUI extends SimpleSwingApplication {
 
   /**
    * Step the simulation by stepping the building model and expressing a new screen.
-   * @param building the BuildingState to step.
+   * @param b the BuildingState to step.
    */
-  def step(building: BuildingState): Unit = {
-
+  def step(): Unit = {
     println("Moving elevators and pulleys... painting new pictures...")
-
-    picture = draw(building)
+      
+    build = build.step
+    picture = draw(build)
   }
 
   /**
-   * Draws the 
+   * Draws a new grid image.
    * @param building BuildingState to represent
    */
-  def draw(building: BuildingState): Array(Array[Color]) = {
-    // TODO : Generate 
-    // 1) elevator shafts + columns they are in.
-    // 2) elevators
-    // 3) requests
-    // 4) building outline
-    val f = building.floors
-    val e = building.elevators
+  def draw(b: BuildingState): Array[Array[Color]] = {
+    val f = b.floors
+    val e = b.elevators
+    val n = b.elevators.length
+    val dims = sketch(f, n)
+    val xblocks = dims._1
+    val yblocks = dims._2
 
-    // Currently tranpose -> alter columns -> transpose
-    // TODO: Better way? XXX: this, shaft, generate -> UNTESTED
-    var trans_pic = picture.transpose
-    trans_pic(12) = shaft(height)
-    picture = trans_pic.transpose
+    var temp = Array.ofDim[Color](xblocks, yblocks)
 
+    // TODO: PUT IN ELEVATORS
+    // TODO: PUT IN PICKUP REQUESTS
 
+    temp(1) = wrap(f, roof(f, n))
+    ////////////////////////////////////
+    temp.transpose
   }
 
   /**
    * Defines the size of the grid screen.
    */
- def sketch(elevators: Int, height: Int): (Int, Int) = {
+  def sketch(height: Int, elevators: Int): (Int, Int) = {
     (2*elevators + 5, height + 3)
   }
 
@@ -88,7 +85,7 @@ object GUI extends SimpleSwingApplication {
    * Draws the building external walls. 
    * Columns that must be expressed in the tranpose of the grid.
    */
-  def outline(height: Int, elevators: Int): Array[Color] = {
+  def outline(height: Int): Array[Color] = {
     val top = Array[Color](Color.GREEN)
     val wal = Array.ofDim[Color](height + 2)
 
@@ -100,10 +97,21 @@ object GUI extends SimpleSwingApplication {
    * Row at `screen(1)`
    * Express after the shafts and outlines.
    */
-  def roof(height: Int, elevators: Int): Array[Color] = {
+  def roof(height: Int, elevs: Int): Array[Color] = {
     val margin = Array[Color](Color.GREEN)
-    val roof = Array.ofDim[Color](2 * elevators + 1)
+    val roof = Array.ofDim[Color](2 * elevs + 1)
 
-    margin ++ (roof map ((p:Color) => Color.RED) ++ margin
+    margin ++ (roof map ((p:Color) => Color.RED)) ++ margin
+  }
+
+  /**
+   * Centers a drawing of the building in the grid.
+   */
+  def wrap(l: Int, mid: Array[Color]): Array[Color] = {
+    val space = (l - mid.length)/2
+    val side = Array.ofDim[Color](space)
+
+    (side map ((p:Color) => Color.WHITE)) ++ mid ++ (side map ((p:Color) => Color.WHITE))
+
   }
 }
