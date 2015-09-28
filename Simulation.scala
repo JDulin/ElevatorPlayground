@@ -4,12 +4,8 @@ import scala.collection.mutable.Stack
 
 import util.Random
 
-// class Simulation {
-//   val place = "holder"
-// }
-
 /**
- * Singleton object to run the simulation.
+ * Singleton object to launch and run the simulation.
  * Instantiates a 'Building' object with elevators and floors.
  *
  * Queries up a series of floor calls for elevators in 'calls' value.
@@ -22,19 +18,12 @@ object Simulation extends App {
     val scanner = new java.util.Scanner(System.in)
     var build = Building(args(0).toInt, args(1).toInt)
 
-    //  Stack of sample pickup requests (Broken example)
-    //  XXX val calls = Stack[(Int, Int)]((6,-1),(4,-1),(5,-1),
-    //  XXX  (2,1),(1,1),(1,1), (4,1), (2,-1), (5,-1), (2,1), (2,1), (3, -1))
-
-    // The simulation's "runtime"
-    // XXX: while (calls != Stack()) {
     while (true) {
-      // Output status
-      println(build.elevators.toString)
+      // Output status, increment step
+      output(build) 
       scanner.nextLine
     
       // Send a new pickup request and increment the simulation in time
-      // XXX val p = calls.pop
       val p = request(build.floors)
       build = build.pickup(p._1, p._2)
       build = build.step
@@ -54,6 +43,22 @@ object Simulation extends App {
       val dir = random.nextInt(2)
       if (dir == 1) {
         1 } else (-1)
+    }
+
+    /**
+     * Pretty printing of BuildingState.
+     * @param building BuildingState to represent
+     */
+    def output(building: BuildingState): Unit = {
+      println("   Elevators' Pickup Requests   ")
+      for (e <- building.elevators) {
+        println(e.id + " : " + e.pick)
+      }
+      println("")
+
+      println("*" * 5 * building.elevators.length)
+
+      println(building.elevators.toString)
     }
 } 
 

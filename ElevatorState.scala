@@ -35,6 +35,9 @@ case class ElevatorState(
       this
     } else {
       val next = floor + direction
+      if (next == 0) {
+        val next = 1 
+      }
 
       this.copy(
         id = id, 
@@ -57,12 +60,15 @@ case class ElevatorState(
       val r = new Random() 
       val dir = pick(next)
 
-      if (dir < 0) {
-        Set(r.nextInt(next))
+      // Enforce positive bound
+      if (dir < 0) { next match {
+        case 0 => Set(r.nextInt(1))
+        case 1 => Set(r.nextInt(1))
+        case _ => Set(r.nextInt(next))
+        }
       } else { 
         Set(r.nextInt(floors - floor + 1) + floor - 1)
       }
-
     } else {
       Set.empty
     }
@@ -82,6 +88,10 @@ case class ElevatorState(
       if ((near(pick).getOrElse(floor) - floor) > 0 && pass == Set.empty) => 1
     case ElevatorState(_,_,_, pass, pick) 
       if ((near(pick).getOrElse(floor) - floor) < 0 && pass == Set.empty) => -1
+    case ElevatorState(_,_,_, pass, _) 
+      if ((near(pass).getOrElse(floor) - floor) == 0)                     => 0
+    case ElevatorState(_,_,_,_, pick) 
+      if ((near(pick).getOrElse(floor) - floor) == 0)                     => 0
     case ElevatorState(_,_,_, pass, pick) 
       if (pass == Set.empty && pick == Map.empty)                         => 0
   }
