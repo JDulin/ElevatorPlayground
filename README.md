@@ -1,13 +1,15 @@
-'Reading in some data is similar to picking up a person, 
-and writing data can be thought of as dropping the person 
-off somewhere. Regular (i.e., not solid state) hard drives 
-have large cylinders of addresses. This is sort of like a rolled up building.'
-
-##  Distributed Applications Engineer Coding Challenge
+## Elevator Playground:  A Simple Scala Scheduler
 
 This elevator simulation provides an interface for the simplest 
-elevator commands and an algorithm which takes some naive steps to improve on 
-a first-come, first-served (FCFS) scheduling algorithm.  
+elevator commands and an implementation of the SCAN algorithm 
+to improve on the naive first-come, first-served (FCFS) 
+elevator scheduling algorithm.  
+
+Fun fact: The SCAN algorithm is qualitatively similar to the 
+most basic disk-scheduling algorithm!  Reading in some data is similar to picking up a person, 
+and writing data can be thought of as dropping the person 
+off somewhere. Regular disk hard-drives 
+have large cylinders of addresses which can be thought of as a rolled up building.
 
 Data Structures:
 
@@ -16,8 +18,9 @@ It defines 3 basic functions for elevator control: pickup, step, and status.
 This is implemented by both state case classes.
 
 -- State is managed in two case classes, a `BuildingState` and an `ElevatorState`.
-Both of these inherit from the empty class `State`, which just ensures 
-homogeneity of the ControlSystem functions in both case classes.
+Both of these inherit from the empty class `State`, which exposes
+the 3 control functions.  They are then ovveridden for the `BuildingState` 
+and `ElevatorState`.
 
 -- `BuildingState` holds a list of `ElevatorStates` which correspond to all 
 of the building's elevators as well as the number of floors in the building.
@@ -50,17 +53,16 @@ a person requesting to be picked up could possibly request to go to,
 and only assigns elevators whose possible destinations intersect with the
 possible requested destinations of a person to be picked up.
 Essentially, pickup requests are only assigned to elevators whose set of possible destinations
-is a subset of the set of possible destinations of the elevator.
+is a superset of the set of possible destinations of the elevator.
 
-(Note: This may not work in practice.  I have heard disturbing rumors of bugs in
-this hastily assembled code.)
+(Note: I have heard disturbing rumors of bugs in this code.)
 
-The ultimate goal of the elevator dispatch algorithm is to never have a
+The simplest aspiration of the elevator dispatch algorithm is to never have a
 passenger in an elevator pass the same floor twice.
 
 ## Running code
 
-Build and run using Scala Build Tool (sbt) with specified parameters for 
+Build and run using Scala Build Tool (sbt) by specifying parameters for 
 the number of elevators and the height of the building you want to simulate.
 For example,
 
@@ -84,8 +86,8 @@ optimization methods of real elevators.  Some current problems with the simulati
 What is the rate of pickup requests to steps? 
 - Does not consider multiple passengers with different destinations picked up at the 
 same floor.
-- Does not simulate different times of day (Beginning of the day, end of the day.)
-- Cannot model for tiered elevators in the Fixed Sectoring Common Sector System.
+- Does not simulate different rates of elevator demand (At the beginning of the day, end of the day.)
+- Cannot model tiered elevators in the Fixed Sectoring Common Sector System.
 - Cannot model 'express' elevators in supertall buildings.
 - Cannot model 'falling' elevators which rush to the top to drop 
 passengers off as they go down (One way around the 'double-stopping' problem.).
@@ -95,7 +97,6 @@ different buildings.).
 - Assumes equal likelihood of pickup requests for all floors.
 I.e.: The simulation does not weight the ground floor for both pickups and destinations.
 - Does not consider energy usage, elevator wear, or out of order elevators.  
-- Door opening and closing time.
 
 ## Some More Theory
 

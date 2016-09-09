@@ -42,7 +42,8 @@ object Simulation extends App {
     def direction = {
       val dir = random.nextInt(2)
       if (dir == 1) {
-        1 } else (-1)
+        1 
+      } else (-1)
     }
 
     /**
